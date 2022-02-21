@@ -6,48 +6,35 @@ import org.junit.Test;
 
 public class TypewiseAlertTest 
 {
+
+    public void inferBreachFor(CoolingType coolingType){
+        SampleBattery sampleBattery = BatteryManager.initBattery("sample", coolingType);
+
+        assertTrue(BatteryManager.inferBreach(BatteryManager.upperLimitMapper.get(coolingType)+1, sampleBattery) == BreachType.TOO_HIGH);
+        assertTrue(BatteryManager.isLowerBreach(BatteryManager.upperLimitMapper.get(coolingType)+1, sampleBattery) == false);
+        assertTrue(BatteryManager.isUpperBreach(BatteryManager.upperLimitMapper.get(coolingType)+1, sampleBattery) == true);
+
+        assertTrue(BatteryManager.inferBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == BreachType.TOO_LOW);
+        assertTrue(BatteryManager.isLowerBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == true);
+        assertTrue(BatteryManager.isUpperBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == false);
+    }
+
     @Test
     public void infersBreachForHighCooling()
     {
-        SampleBattery sampleBattery = BatteryManager.initBattery("sample", CoolingType.HI_ACTIVE_COOLING);
-
-        assertTrue(BatteryManager.inferBreach(46, sampleBattery) == BreachType.TOO_HIGH);
-        assertTrue(BatteryManager.isLowerBreach(46, sampleBattery) == false);
-        assertTrue(BatteryManager.isUpperBreach(46, sampleBattery) == true);
-
-        assertTrue(BatteryManager.inferBreach(-1, sampleBattery) == BreachType.TOO_LOW);
-        assertTrue(BatteryManager.isLowerBreach(-1, sampleBattery) == true);
-        assertTrue(BatteryManager.isUpperBreach(-1, sampleBattery) == false);
+        inferBreachFor(CoolingType.HI_ACTIVE_COOLING);
 
     }
 
     @Test
     public void infersBreachForPassiveCooling()
     {
-        SampleBattery sampleBattery = BatteryManager.initBattery("sample", CoolingType.PASSIVE_COOLING);
-
-        assertTrue(BatteryManager.inferBreach(36, sampleBattery) == BreachType.TOO_HIGH);
-        assertTrue(BatteryManager.isLowerBreach(36, sampleBattery) == false);
-        assertTrue(BatteryManager.isUpperBreach(36, sampleBattery) == true);
-
-        assertTrue(BatteryManager.inferBreach(-1, sampleBattery) == BreachType.TOO_LOW);
-        assertTrue(BatteryManager.isLowerBreach(-1, sampleBattery) == true);
-        assertTrue(BatteryManager.isUpperBreach(-1, sampleBattery) == false);
-
+        inferBreachFor(CoolingType.PASSIVE_COOLING);
     }
 
     @Test
     public void infersBreachForMidCooling()
     {
-        SampleBattery sampleBattery = BatteryManager.initBattery("sample", CoolingType.MED_ACTIVE_COOLING);
-
-        assertTrue(BatteryManager.inferBreach(41, sampleBattery) == BreachType.TOO_HIGH);
-        assertTrue(BatteryManager.isLowerBreach(41, sampleBattery) == false);
-        assertTrue(BatteryManager.isUpperBreach(41, sampleBattery) == true);
-
-        assertTrue(BatteryManager.inferBreach(-1, sampleBattery) == BreachType.TOO_LOW);
-        assertTrue(BatteryManager.isLowerBreach(-1, sampleBattery) == true);
-        assertTrue(BatteryManager.isUpperBreach(-1, sampleBattery) == false);
-
+        inferBreachFor(CoolingType.MED_ACTIVE_COOLING);
     }
 }
