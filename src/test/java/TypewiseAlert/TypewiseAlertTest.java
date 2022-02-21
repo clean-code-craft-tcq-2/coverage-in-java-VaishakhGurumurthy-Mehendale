@@ -17,6 +17,11 @@ public class TypewiseAlertTest
         assertTrue(BatteryManager.inferBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == BreachType.TOO_LOW);
         assertTrue(BatteryManager.isLowerBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == true);
         assertTrue(BatteryManager.isUpperBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == false);
+
+        int midValue = ( BatteryManager.lowerLimitMapper.get(coolingType) + BatteryManager.upperLimitMapper.get(coolingType) ) / 2;
+        assertTrue(BatteryManager.inferBreach(midValue, sampleBattery) == BreachType.NORMAL);
+        assertTrue(BatteryManager.isLowerBreach(midValue, sampleBattery) == false);
+        assertTrue(BatteryManager.isUpperBreach(midValue, sampleBattery) == false);
     }
 
     @Test
