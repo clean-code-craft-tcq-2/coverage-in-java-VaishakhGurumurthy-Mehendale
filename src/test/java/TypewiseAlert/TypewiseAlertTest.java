@@ -39,7 +39,7 @@ public class TypewiseAlertTest
 
     public static void testLowerLimitBreach(CoolingType coolingType, SampleBattery sampleBattery){
 
-        for(int tempValue = BatteryManager.lowerLimitMapper.get(coolingType)-1; tempValue > BatteryManager.upperLimitMapper.get(coolingType) - 10; tempValue--){
+        for(int tempValue = BatteryManager.lowerLimitMapper.get(coolingType)-1; tempValue > BatteryManager.lowerLimitMapper.get(coolingType) - 10; tempValue--){
 
             assertTrue(BatteryManager.inferBreach(tempValue, sampleBattery) == BreachType.TOO_LOW);
             assertTrue(BatteryManager.isLowerBreach(tempValue, sampleBattery));
