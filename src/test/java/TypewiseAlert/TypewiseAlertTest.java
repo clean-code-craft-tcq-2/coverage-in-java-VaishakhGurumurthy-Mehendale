@@ -1,45 +1,65 @@
 package TypewiseAlert;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class TypewiseAlertTest 
+public class TypewiseAlertTest
 {
 
-    public void inferBreachFor(CoolingType coolingType){
+    public static void inferBreachFor(CoolingType coolingType){
         SampleBattery sampleBattery = BatteryManager.initBattery("sample", coolingType);
 
-        assertTrue(BatteryManager.inferBreach(BatteryManager.upperLimitMapper.get(coolingType)+1, sampleBattery) == BreachType.TOO_HIGH);
-        assertTrue(BatteryManager.isLowerBreach(BatteryManager.upperLimitMapper.get(coolingType)+1, sampleBattery) == false);
-        assertTrue(BatteryManager.isUpperBreach(BatteryManager.upperLimitMapper.get(coolingType)+1, sampleBattery) == true);
+        testUpperLimitBreach(coolingType, sampleBattery);
+        testLowerLimitBreach(coolingType, sampleBattery);
+        testNoBreachState(coolingType, sampleBattery);
 
-        assertTrue(BatteryManager.inferBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == BreachType.TOO_LOW);
-        assertTrue(BatteryManager.isLowerBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == true);
-        assertTrue(BatteryManager.isUpperBreach(BatteryManager.lowerLimitMapper.get(coolingType)-1, sampleBattery) == false);
-
-        int midValue = ( BatteryManager.lowerLimitMapper.get(coolingType) + BatteryManager.upperLimitMapper.get(coolingType) ) / 2;
-        assertTrue(BatteryManager.inferBreach(midValue, sampleBattery) == BreachType.NORMAL);
-        assertTrue(BatteryManager.isLowerBreach(midValue, sampleBattery) == false);
-        assertTrue(BatteryManager.isUpperBreach(midValue, sampleBattery) == false);
-    }
-
-    @Test
-    public void infersBreachForHighCooling()
-    {
-        inferBreachFor(CoolingType.HI_ACTIVE_COOLING);
 
     }
 
-    @Test
-    public void infersBreachForPassiveCooling()
-    {
-        inferBreachFor(CoolingType.PASSIVE_COOLING);
+    public static void isEmailSent(BreachType breachType){
+        assertTrue( Alerter.sendToEmail(breachType));
     }
 
-    @Test
-    public void infersBreachForMidCooling()
-    {
-        inferBreachFor(CoolingType.MED_ACTIVE_COOLING);
+    public static void isControllerAlerted(BreachType breachType){
+        assertTrue( Alerter.sendToController(breachType) );
     }
+
+    public static void testUpperLimitBreach(CoolingType coolingType, SampleBattery sampleBattery){
+
+        for(int tempValue = BatteryManager.upperLimitMapper.get(coolingType)+1; tempValue < BatteryManager.upperLimitMapper.get(coolingType)  + 10; tempValue++){
+            assertTrue(BatteryManager.inferBreach(tempValue, sampleBattery) == BreachType.TOO_HIGH);
+            assertFalse(BatteryManager.isLowerBreach(tempValue, sampleBattery) );
+            assertTrue(BatteryManager.isUpperBreach(tempValue, sampleBattery) );
+       }
+
+
+    }
+
+    public static void testLowerLimitBreach(CoolingType coolingType, SampleBattery sampleBattery){
+
+        for(int tempValue = BatteryManager.lowerLimitMapper.get(coolingType)-1; tempValue > BatteryManager.upperLimitMapper.get(coolingType) - 10; tempValue--){
+
+            assertTrue(BatteryManager.inferBreach(tempValue, sampleBattery) == BreachType.TOO_LOW);
+            assertTrue(BatteryManager.isLowerBreach(tempValue, sampleBattery));
+            assertFalse(BatteryManager.isUpperBreach(tempValue, sampleBattery));
+
+        }
+
+
+    }
+
+    public static void testNoBreachState(CoolingType coolingType, SampleBattery sampleBattery){
+
+        for( int tempValue = BatteryManager.lowerLimitMapper.get(coolingType); tempValue <= BatteryManager.upperLimitMapper.get(coolingType); tempValue++  ){
+            assertTrue(BatteryManager.inferBreach(tempValue, sampleBattery) == BreachType.NORMAL);
+            assertFalse(BatteryManager.isLowerBreach(tempValue, sampleBattery));
+            assertFalse(BatteryManager.isUpperBreach(tempValue, sampleBattery));
+        }
+
+    }
+
+
+
 }
